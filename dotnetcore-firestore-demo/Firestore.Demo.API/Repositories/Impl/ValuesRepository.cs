@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Firestore.Demo.API.Models;
 using Google.Apis.Auth.OAuth2;
@@ -20,7 +21,7 @@ namespace Firestore.Demo.API.Repositories.Impl
         public ValuesRepository()
         {
             var credential = GoogleCredential
-                .FromFile(Path.Combine(AppContext.BaseDirectory + "/miketest-2d444baa8876.json"));
+                .FromFile(Path.Combine(AppContext.BaseDirectory + "/google.json"));
             var channelCredentials = credential.ToChannelCredentials();
             var channel = new Channel(FirestoreClient.DefaultEndpoint.ToString(), channelCredentials);
             var firestoreClient = FirestoreClient.Create(channel);
@@ -30,36 +31,21 @@ namespace Firestore.Demo.API.Repositories.Impl
 
         public async Task<IEnumerable<Cafe>> GetValues()
         {
-            var result = new List<Cafe>();
             var usersRef = _db.Collection("cafes");
             var snapshot = await usersRef.GetSnapshotAsync();
-            foreach (var document in snapshot.Documents)
-            {
-//                Console.WriteLine("User: {0}", document.Id);
-//                Dictionary<string, object> documentDictionary = document.ToDictionary();
-//                Console.WriteLine("First: {0}", documentDictionary["First"]);
-//                if (documentDictionary.ContainsKey("Middle"))
-//                {
-//                    Console.WriteLine("Middle: {0}", documentDictionary["Middle"]);
-//                }
-//
-//                Console.WriteLine("Last: {0}", documentDictionary["Last"]);
-//                Console.WriteLine("Born: {0}", documentDictionary["Born"]);
-//                Console.WriteLine();
-                var dictionary = document.ToDictionary();
-                result.Add(new Cafe
-                {
-                    Name = dictionary["name"].ToString(),
-                    City = dictionary["city"].ToString()
-                });
-            }
 
-            return result;
+            return snapshot.Documents.Select(document => document.ToDictionary()).Select(dictionary => new Cafe {Name = dictionary["name"].ToString(), City = dictionary["city"].ToString()}).ToList();
         }
 
-        public Task CreateValue(Cafe value)
+        public async Task CreateValue(Cafe value)
         {
-            throw new NotImplementedException();
+            var docRef = _db.Collection("cafes").Document();
+            var user = new Dictionary<string, object>
+            {
+                { "name", value.Name },
+                { "city", value.City }
+            };
+            await docRef.SetAsync(user);
         }
     }
 }
