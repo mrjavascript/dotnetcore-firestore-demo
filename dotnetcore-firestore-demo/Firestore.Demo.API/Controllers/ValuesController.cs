@@ -49,8 +49,9 @@ namespace Firestore.Demo.API.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task Post([FromBody] Cafe value)
         {
+            await _valuesService.CreateValue(value);
         }
 
         // PUT api/values/5

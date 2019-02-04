@@ -18,5 +18,10 @@ namespace Firestore.Demo.API.Services.Impl
         {
             return await _valuesRepository.GetValues();
         }
+
+        public async Task CreateValue(Cafe value)
+        {
+            await _valuesRepository.CreateValue(value);
+        }
     }
 }

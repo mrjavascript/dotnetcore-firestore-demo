@@ -351,4 +351,6 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
+*/google.json
+
 # End of https://www.gitignore.io/api/intellij,aspnetcore

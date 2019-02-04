@@ -56,5 +56,10 @@ namespace Firestore.Demo.API.Repositories.Impl
 
             return result;
         }
+
+        public Task CreateValue(Cafe value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

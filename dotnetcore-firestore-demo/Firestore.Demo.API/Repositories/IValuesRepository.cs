@@ -7,5 +7,6 @@ namespace Firestore.Demo.API.Repositories
     public interface IValuesRepository
     {
         Task<IEnumerable<Cafe>> GetValues();
+        Task CreateValue(Cafe value);
     }
 }
